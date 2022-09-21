@@ -1,0 +1,12 @@
+@import "../login/login.component.scss";
+
+.form-container {
+  @include form();
+
+  & .form-check {
+    margin-top: 5px;
+  }
+}
+h1 {
+  @include title();
+}
