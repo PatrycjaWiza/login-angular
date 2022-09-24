@@ -14,8 +14,8 @@ import {
 export class LoginComponent implements OnInit {
   reactiveForm: FormGroup;
   submitted: boolean = false;
-  pathMobile: string = '../assets/images/yanosik-logo-mobile.png';
-  pathDesktop: string = '../assets/images/yanosik-logo-desktop.png 800w';
+  pathMobile: string = 'assets/images/yanosik-logo-mobile.png';
+  pathDesktop: string = 'assets/images/yanosik-logo-desktop.png 800w';
 
   constructor(private formBuilder: FormBuilder) {
     this.reactiveForm = this.formBuilder.group({
