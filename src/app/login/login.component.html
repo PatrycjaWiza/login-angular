@@ -1,7 +1,12 @@
 <div class="form-container">
-  <form>
-    <div>
+  <form (ngSubmit)="onSubmit()" [formGroup]="reactiveForm">
+    <div class="heading">
       <h1>Logowanie</h1>
+      <picture>
+        <source media="(max-width: 479px)" srcset="{{pathMobile}}" />
+        <source media="(min-width: 480px)" srcset="{{pathDesktop}}" />
+        <img src="{{ pathMobile }}" alt="Yanosik logo" width="200px" />
+      </picture>
     </div>
     <div class="form-group">
       <label for="exampleInputEmail1">Adres email</label>
@@ -11,8 +16,12 @@
         id="exampleInputEmail1"
         aria-describedby="emailHelp"
         placeholder="Wpisz swój email"
-        required
+        formControlName="email"
       />
+      <div class="invalid" *ngIf="submitted && f.email.errors">
+        <div *ngIf="f.email.errors.required">Wpisz adres email.</div>
+        <div *ngIf="f.email.errors.pattern">Wpisz poprawny adres email.</div>
+      </div>
     </div>
     <div class="form-group">
       <label for="exampleInputPassword1">Hasło</label>
@@ -21,9 +30,14 @@
         class="form-control"
         id="exampleInputPassword1"
         placeholder="Wpisz swoje hasło"
-        minlength="6"
-        required
+        formControlName="password"
       />
+      <div class="invalid" *ngIf="submitted && f.password.errors">
+        <div *ngIf="f.password.errors.required">Wpisz hasło.</div>
+        <div *ngIf="f.password.errors.minlength">
+          Wpisz conajmniej 6 znaków.
+        </div>
+      </div>
     </div>
     <button type="submit" class="btn btn-primary">Zaloguj</button>
   </form>

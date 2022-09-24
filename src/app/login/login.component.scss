@@ -1,4 +1,5 @@
 @mixin form {
+  position: relative;
   width: 85vw;
   padding: 40px;
   margin: 10vh auto;
@@ -13,10 +14,43 @@
     margin-top: 15vh;
     max-width: 500px;
   }
+  .form-group:nth-child(2) {
+    margin-top: 50px;
+  }
 }
 
 @mixin title {
   margin-bottom: 20px;
+  margin-top: 15px;
+  margin-left: 10px;
+  color: white;
+  font-size: 2rem;
+  @media screen and (min-width: 780px) {
+    margin-left: 35px;
+  }
+}
+@mixin formHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #007bff;
+
+  picture {
+    overflow: hidden;
+    position: absolute;
+    right: -50px;
+
+    @media screen and (min-width: 480px) {
+      right: 0;
+    }
+  }
+}
+@mixin red {
+  color: red;
 }
 
 .form-container {
@@ -24,4 +58,11 @@
 }
 h1 {
   @include title();
+}
+.invalid {
+  @include red();
+}
+
+.heading {
+  @include formHeader();
 }

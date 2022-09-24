@@ -10,3 +10,9 @@
 h1 {
   @include title();
 }
+.invalid {
+  @include red();
+}
+.heading {
+  @include formHeader();
+}
