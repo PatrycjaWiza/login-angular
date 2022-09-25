@@ -83,25 +83,26 @@
       </label>
 
       <!-- children checkboxes -->
-      <div *ngFor="let n of checkboxes" class="form-check">
+      <div *ngFor="let control of checkboxes; let i = index" class="form-check">
         <input
           class="form-check-input"
           type="checkbox"
-          value=""
-          id="{{ n.id }}"
-          [checked]="n.select"
+          [value]="control.value"
+          id="{{ i }}"
+          [checked]="control.select"
           (change)="onChangeCheckbox($event)"
-          [required]="n.required"
-          formControlName="{{ n.id }}"
           [ngClass]="{
-            'is-invalid': n.required && f[n.id].errors && submitted,
-            disabled: n.checked
+            'is-invalid': f.checkArray.errors?.required && submitted,
+            'is-valid': f.checkArray.valid
           }"
         />
-        <label class="form-check-label" for="{{ n.id }}">
-          {{ n.name }}
+        <label class="form-check-label" for="{{ i }}">
+          {{ control.name }}
         </label>
       </div>
+      <small class="invalid" *ngIf="f.checkArray.errors?.required && submitted">
+        Przynajmniej jedno pole jest wymagane.
+      </small>
     </div>
 
     <button type="submit" class="btn btn-primary">Zarejestruj</button>

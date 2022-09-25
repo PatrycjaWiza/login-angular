@@ -1,10 +1,10 @@
-import { NgClass } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   FormGroup,
   FormControl,
   Validators,
   FormBuilder,
+  FormArray,
 } from '@angular/forms';
 import { UserService } from './userService';
 import { User } from './user';
@@ -23,43 +23,66 @@ export class RegisterComponent implements OnInit {
   user: User;
   users: User[] = [];
 
-  // checkboxes select all
-  checkboxes = [
+  // checkboxes array
+  checkboxes: Array<any> = [
     {
-      id: 'defaultCheck2',
       name: 'Zapoznałem/am się z Regulaminem',
+      value: 'Zapoznałem/am się z Regulaminem',
       select: false,
-      required: true,
     },
     {
-      id: 'defaultCheck3',
       name: 'Zapoznałem/am się z Polityką Prywatności',
+      value: 'Zapoznałem/am się z Polityką Prywatności',
       select: false,
-      required: true,
     },
     {
-      id: 'defaultCheck4',
       name: 'Wyrażam zgodę na przetwarzanie moich danych w celach marketingowych',
+      value:
+        'Wyrażam zgodę na przetwarzanie moich danych w celach marketingowych',
       select: false,
-      required: false,
     },
   ];
 
-  onChangeCheckbox($event) {
-    const id = $event.target.id;
-    const isChecked = $event.target.checked;
-    console.log($event.target.ngClass);
-    this.checkboxes.map((box) => {
-      if (id === box.id) {
+  //checkboxes select all
+  onChangeCheckbox(e) {
+    const isChecked = e.target.checked;
+    const id = e.target.id;
+
+    const checkArray: FormArray = this.reactiveForm.get(
+      'checkArray'
+    ) as FormArray;
+
+    this.checkboxes.map((box, i) => {
+      if (i == id) {
         this.parentSelector = false;
         return (box.select = isChecked);
       }
-      if (id === 'defaultCheck1') {
+      if (id == 'defaultCheck1') {
         box.select = this.parentSelector;
+        if (box.select == true) {
+          checkArray.push(new FormControl(e.target.value));
+        }
+        if (box.select == false) {
+          checkArray.removeAt(id);
+        }
         return box;
       }
-      return;
+
+      //validation checkbox trial
+      if (e.target.checked) {
+        checkArray.push(new FormControl(e.target.value));
+      } else {
+        let i = 0;
+        checkArray.controls.forEach((item) => {
+          if (item.value == e.target.value) {
+            checkArray.removeAt(i);
+            return;
+          }
+          i++;
+        });
+      }
     });
+    return;
   }
 
   constructor(
@@ -77,9 +100,7 @@ export class RegisterComponent implements OnInit {
           Validators.minLength(6),
         ]),
         passwordRepeat: new FormControl(null, [Validators.required]),
-        defaultCheck2: new FormControl(null, [Validators.required]),
-        defaultCheck3: new FormControl(null, [Validators.required]),
-        defaultCheck4: '',
+        checkArray: this.formBuilder.array([], [Validators.required]),
       },
       {
         validators: this.MatchCheck('password', 'passwordRepeat'),
@@ -106,6 +127,7 @@ export class RegisterComponent implements OnInit {
     };
   }
 
+  // post http request - form submission
   onSubmit() {
     this.submitted = true;
     if (this.reactiveForm.invalid) {
@@ -113,7 +135,7 @@ export class RegisterComponent implements OnInit {
     } else {
       this.user = this.reactiveForm.value;
       this.userService.onSubmit(this.user).subscribe((response: any) => {
-        alert('Rejestracja przebiegła pomyślne!');
+        window.alert('Rejestracja przebiegła pomyślne!');
         this.users.push({
           email: response.email,
           password: response.password,
@@ -125,7 +147,7 @@ export class RegisterComponent implements OnInit {
         this.reactiveForm.reset();
       }),
         (error) => {
-          alert('Coś poszło nie tak... Spróbuj ponownie!');
+          window.alert('Coś poszło nie tak... Spróbuj ponownie!');
         };
     }
   }

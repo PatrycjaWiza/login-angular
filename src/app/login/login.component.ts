@@ -5,6 +5,8 @@ import {
   Validators,
   FormBuilder,
 } from '@angular/forms';
+import { LoginUserService } from './userServiceLogin';
+import { UserLogin } from './userLogin';
 
 @Component({
   selector: 'app-login',
@@ -16,8 +18,13 @@ export class LoginComponent implements OnInit {
   submitted: boolean = false;
   pathMobile: string = 'assets/images/yanosik-logo-mobile.png';
   pathDesktop: string = 'assets/images/yanosik-logo-desktop.png 800w';
+  userLogin: UserLogin;
+  usersLogin: UserLogin[] = [];
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    public loginUserService: LoginUserService
+  ) {
     this.reactiveForm = this.formBuilder.group({
       email: new FormControl(null, [
         Validators.required,
@@ -37,6 +44,21 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
     if (this.reactiveForm.invalid) {
       return;
+    } else {
+      this.userLogin = this.reactiveForm.value;
+      this.loginUserService
+        .onSubmit(this.userLogin)
+        .subscribe((response: any) => {
+          window.alert('Użytkownik zalogowany pomyślnie!');
+          this.usersLogin.push({
+            email: response.email,
+            password: response.password,
+          });
+          this.reactiveForm.reset();
+        }),
+        (error) => {
+          window.alert('Coś poszło nie tak... Spróbuj ponownie!');
+        };
     }
   }
 
